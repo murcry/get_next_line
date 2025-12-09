@@ -6,7 +6,7 @@
 /*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:12:35 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/04 13:28:03 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/09 13:57:44 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,24 @@ char	*ft_strchr(const char *s, int c);
  */
 char	*ft_strjoin(char const *s1, char const *s2);
 
+/**
+ * @brief Returns a pointer to a new string which is a duplicate of the string s.
+ * 
+ * Memory for the new string is obtained with malloc(), and can be freed with
+ * free().
+ * @param s The string to duplicate.
+ * @return A pointer to the duplicated string, or NULL if insufficient memory was
+ * available.
+ */
+char	*ft_strdup(const char *s);
+
 /** 
  * @brief Reads a line from a file descriptor.
  *
  * This function reads from the file descriptor 'fd' and returns the next line,
  * including the newline character, unless the end of the file is reached
  * without a newline.
- *
  * @param fd The file descriptor to read from.
- *
  * @return The line that was read as a null-terminated string.
  * Returns NULL if an error occurs or if the end of the file is reached
  * and there is nothing left to read. The caller must free the returned string.
