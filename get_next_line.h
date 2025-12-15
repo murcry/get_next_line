@@ -6,7 +6,7 @@
 /*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:12:35 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/09 13:57:44 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/15 13:10:30 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
-#include <stdio.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
@@ -30,16 +29,15 @@
 size_t	ft_strlen(const char *str);
 
 /**
- * @brief Locate character in string.
+ * @brief Locates the first occurrence of the character 'c' in the string 's'.
  * 
- * The strchr() function locates the first occurence of c (converted to a char)
- * in the string pointed to by s. The terminating null character is considered
- * to be part of the string; therefor if c is '\0', the function locate the
- * terminating '\0'.
- * @param *s
- * @param c
- * @return a pointer to the located character, or NULL if the character does not
- * appear in the string.
+ * The character 'c' is converted to a char. The terminating null character 
+ * is considered to be part of the string; therefore if 'c' is '\0', 
+ * the function locates the terminating '\0'.
+ * @param s The string to be searched.
+ * @param c The character to be searched (passed as an int).
+ * @return A pointer to the located character, or NULL if the character 
+ * does not appear in the string.
  */
 char	*ft_strchr(const char *s, int c);
 
