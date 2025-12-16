@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/16 13:01:22 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:29:41 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,56 +76,78 @@ static ssize_t	ft_fill_buffer(int fd, char *buffer, char **saved)
 	return (bytes_readed);
 }
 
-static void	ft_get_line(char *saved, char *returned)
+/**
+ * @brief Extracts the first line found in the static string 'saved'.
+ *
+ * This function calculates the length of the line up to the newline character,
+ * allocates memory for it, and copies the content. The returned string is
+ * NUL-terminated.
+ *
+ * @param saved The static string containing the buffer read from the file.
+ * @return A pointer to the newly allocated string containing the line, 
+ * or NULL if memory allocation fails.
+ */
+static char	*ft_get_line(char *saved)
 {
+	char	*returned;
 	ssize_t	i;
 	ssize_t	s_returned;
 
 	i = 0;
 	s_returned = ft_strlen(saved, '\n') + 1;
-	returned = malloc(sizeof(char) * s_returned);
-	if (returned)
+	returned = malloc(sizeof(char) * s_returned + 1);
+	if (!returned)
+		return (NULL);
+	while (i < s_returned)
 	{
-		while(i++ < s_returned)
-			returned[i - 1] = saved[i - 1]; //ESTA BIEN AQUI
-		
+		returned[i] = saved[i];
+		i++;
 	}
+	returned[i] = '\0';
+	return (returned);
 }
 
-// char	*get_next_line(int fd)
-// {
-// 	static char	*saved;
-// 	char		*returned;
-// 	char		buffer[BUFFER_SIZE];
-// 	ssize_t		bytes;
+static void	ft_clean_saved(char **s)
+{
+	char	*temp;
 
-// 	bytes = 1;
-// 	returned = NULL;
-// 	while (bytes > 0 && (!saved || ft_strchr(saved, '\n') == NULL))
-// 		bytes = ft_fill_buffer(fd, buffer, &saved);
-// 	if (bytes > 0)
-// 	{
-// 		//funcion que copia hasta x posicion de saved en returned
-// 		//funcion que elimina por delante todo lo de saved hasta apuntar a lo que se ha puesto en returned
-// 	}
-// 	else
-// 	{
-// 		if (bytes == 0 && saved)
-// 			returned = ft_strdup(saved);
-// 		free(saved);
-// 		saved = NULL;
-// 	}
-// 	return (returned);
-// }
+	temp = *s;
+	*s = ft_substr(*s, ft_strlen(*s, '\n') + 1, ft_strlen(*s, 0));
+	free(temp);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*saved;
+	char		*returned;
+	char		buffer[BUFFER_SIZE];
+	ssize_t		bytes;
+
+	bytes = 1;
+	returned = NULL;
+	while (bytes > 0 && (!saved || ft_strchr(saved, '\n') == NULL))
+		bytes = ft_fill_buffer(fd, buffer, &saved);
+	if (bytes > 0)
+	{
+		returned = ft_get_line(saved);
+		if (!returned)
+			return (returned);
+		ft_clean_saved(&saved);
+	}
+	else
+	{
+		if (bytes == 0 && saved)
+			returned = ft_strdup(saved);
+		free(saved);
+		saved = NULL;
+	}
+	return (returned);
+}
 
 int	main(void)
 {
-	char	*frase = "Hola\ngente";
-	char	*oracion;
-	size_t	salto = ft_strlen(frase, '\n');
-	printf("%d\n", (int)salto);
-	ft_get_line(frase, oracion);
-	printf("%s", oracion);
-	write(1, "a", 1);
+	int fd = open("AlbionOnline.txt", O_RDONLY);
+	for (int i = 0; i < 3; i++)
+		printf("%s", get_next_line(fd));
 	return (0);
 }

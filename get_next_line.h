@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:12:35 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/16 12:28:31 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:28:28 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+#include <stdio.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif

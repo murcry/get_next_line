@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 20:18:52 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/16 12:26:45 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:27:24 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ static void	ft_join(char *joined, char const *s1, char const *s2)
 }
 
 /**
- * @brief Computes the length of the string s until de char c (passed as an int) is
- * found.
+ * @brief Computes the length of the string s until de char c (passed as an int)
+ * is found.
  *
  * @param s The string to measure.
  * @param c The character we are looking for, if it's 0 we just want to know the
