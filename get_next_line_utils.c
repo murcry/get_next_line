@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 20:18:52 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/09 13:55:47 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/16 12:26:45 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+/**
+ * @brief Joins the two strings 's1' and 's2' into the 'joined' buffer.
+ *
+ * @param joined The destination buffer where the result is stored.
+ * @param s1 The first string to be copied.
+ * @param s2 The second string to be appended.
+ */
 static void	ft_join(char *joined, char const *s1, char const *s2)
 {
 	size_t	i;
@@ -32,16 +39,39 @@ static void	ft_join(char *joined, char const *s1, char const *s2)
 	joined[i + j] = '\0';
 }
 
-size_t	ft_strlen(const char *str)
+/**
+ * @brief Computes the length of the string s until de char c (passed as an int) is
+ * found.
+ *
+ * @param s The string to measure.
+ * @param c The character we are looking for, if it's 0 we just want to know the
+ * length of the str.
+ * @return The number of characters that precede the terminating NUL character.
+ */
+size_t	ft_strlen(const char *str, int c)
 {
 	size_t	i;
 
 	i = 0;
-	while (str[i])
-		i++;
+	if (c == 0)
+		while (str[i])
+			i++;
+	else
+	{
+		while (str[i] && str[i] != (char)c)
+			i++;
+	}
 	return (i);
 }
 
+/**
+ * @brief Locates the first occurrence of character c in string s.
+ *
+ * @param s The string to search.
+ * @param c The character to locate.
+ * @return A pointer to the first occurrence of the character c in the string s, 
+ * or NULL if the character is not found.
+ */
 char	*ft_strchr(const char *s, int c)
 {
 	unsigned int	i;
@@ -60,6 +90,13 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+/**
+ * @brief Allocates (with malloc(3)) and returns a new string resulting from the
+ * concatenation of 's1' and 's2'.
+ * @param s1 The prefix string.
+ * @param s2 The suffix string.
+ * @return The new string, or NULL if the memory allocation failed.
+ */
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	size_t	s1_len;
@@ -69,8 +106,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (s1 == NULL || s2 == NULL)
 		return (NULL);
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
+	s1_len = ft_strlen(s1, 0);
+	s2_len = ft_strlen(s2, 0);
 	joined_len = s1_len + s2_len;
 	joined = malloc(joined_len + 1);
 	if (joined == NULL)
@@ -79,6 +116,14 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (joined);
 }
 
+/**
+ * @brief returns a pointer to a new string which is a duplicate of the string s.
+ * Memory for the new string is obtained with malloc(3).
+ *
+ * @param s The string to duplicate.
+ * @return A pointer to the duplicated string, or NULL if insufficient memory 
+ * was available.
+ */
 char	*ft_strdup(const char *s)
 {
 	char	*copy;
@@ -86,7 +131,7 @@ char	*ft_strdup(const char *s)
 	int		i;
 
 	i = 0;
-	size_s = ft_strlen(s);
+	size_s = ft_strlen(s, 0);
 	copy = malloc(size_s + 1);
 	if (copy == NULL)
 		return (NULL);
