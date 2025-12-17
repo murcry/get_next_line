@@ -6,7 +6,7 @@
 /*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/16 16:29:41 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/17 12:11:53 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static ssize_t	ft_fill_buffer(int fd, char *buffer, char **saved)
 	char	*temp4free;
 	ssize_t	bytes_readed;
 
-	bytes_readed = read(fd, buffer, BUFFER_SIZE - 1);
+	bytes_readed = read(fd, buffer, BUFFER_SIZE);
 	if (bytes_readed <= 0)
 		return (bytes_readed);
 	buffer[bytes_readed] = '\0';
@@ -111,18 +111,26 @@ static void	ft_clean_saved(char **s)
 {
 	char	*temp;
 
-	temp = *s;
-	*s = ft_substr(*s, ft_strlen(*s, '\n') + 1, ft_strlen(*s, 0));
-	free(temp);
+	if (*s)
+	{
+		temp = *s;
+		*s = ft_substr(*s, ft_strlen(*s, '\n') + 1, ft_strlen(*s, 0));
+		free(temp);
+	}
+	else
+		*s = NULL;
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*saved;
 	char		*returned;
-	char		buffer[BUFFER_SIZE];
+	char		*buffer;
 	ssize_t		bytes;
 
+	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
 	bytes = 1;
 	returned = NULL;
 	while (bytes > 0 && (!saved || ft_strchr(saved, '\n') == NULL))
@@ -133,6 +141,7 @@ char	*get_next_line(int fd)
 		if (!returned)
 			return (returned);
 		ft_clean_saved(&saved);
+		
 	}
 	else
 	{
