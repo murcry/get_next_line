@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/17 14:09:39 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/22 19:52:31 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/**
- * @brief Fill the buffer and returns the bytes readed.
- * 
- * This is a static function for the 
- */
 // static ssize_t	ft_fill_buffer(int fd, char *buffer, char **saved)
 // {
 // 	char	*temp4free;
@@ -57,7 +52,7 @@ static char	*ft_read_to_saved(int fd, char *saved)
 	if (!buffer)
 		return (NULL);
 	readed_bytes = 1;
-	while (readed_bytes != 0 && (!saved || !ft_strchr(saved, '\n')))
+	while (readed_bytes > 0 && (!saved || !ft_strchr(saved, '\n')))
 	{
 		readed_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (readed_bytes == -1)
@@ -91,8 +86,10 @@ static char	*ft_get_line(char *saved)
 	ssize_t	s_returned;
 
 	i = -1;
+	if (!saved || !saved[0])
+		return (NULL);
 	s_returned = ft_strlen_gnl(saved, '\n') + 1;
-	returned = malloc(sizeof(char) * s_returned + 1);
+	returned = malloc(sizeof(char) * (s_returned + 1));
 	if (!returned)
 		return (NULL);
 	while (++i < s_returned)
@@ -110,18 +107,59 @@ static char	*ft_get_line(char *saved)
  *
  * @param s A pointer to the address of the static string (saved buffer).
  */
-static void	ft_clean_saved(char **s)
-{
-	char	*temp;
+// static void	ft_clean_saved(char **s)
+// {
+// 	char	*temp;
+// 	char	*new_saved;
 
-	if (*s)
+// 	if (*s && s)
+// 	{
+// 		temp = *s;
+// 		new_saved = ft_substr(*s, ft_strlen_gnl(*s, '\n')
+// 				+ 1, ft_strlen_gnl(*s, 0));
+// 		free(temp);
+// 		if (!new_saved || !new_saved[0])
+// 		{
+// 			if (!new_saved[0])
+// 				free(new_saved);
+// 			*s = NULL;
+// 		}
+// 		else
+// 		{
+// 			*s = new_saved;
+// 			free(new_saved);
+// 		}
+// 	}
+// }
+
+static void	ft_clean_saved(char **saved)
+{
+	char	*new_saved;
+	char	*temp;
+	ssize_t	i;
+
+	if (saved && *saved)
 	{
-		temp = *s;
-		*s = ft_substr(*s, ft_strlen_gnl(*s, '\n') + 1, ft_strlen_gnl(*s, 0));
+		temp = *saved;
+		i = 0;
+		while ((*saved)[i] && (*saved)[i] != '\n')
+			i++;
+		if ((*saved)[i] == '\n')
+			i++;
+		new_saved = ft_substr(*saved, i, (ft_strlen_gnl(*saved, 0) - i));
 		free(temp);
+		if (!new_saved || !new_saved[0])
+		{
+			if (!new_saved[0])
+				free(new_saved);
+			*saved = NULL;
+		}
+		else
+		{
+			*saved = new_saved;
+			free(new_saved);
+		}
 	}
-	else
-		*s = NULL;
 }
 
 /**
@@ -142,12 +180,23 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		if (saved)
+			free(saved);
 		return (NULL);
+	}
 	saved = ft_read_to_saved(fd, saved);
 	if (!saved)
 		return (NULL);
 	line = ft_get_line(saved);
-	ft_clean_saved(&saved);
+	if (!line)
+	{
+		free(saved);
+		saved = NULL;
+		return (NULL);
+	}
+	if (saved)
+		ft_clean_saved(&saved);
 	return (line);
 }
 
@@ -171,7 +220,6 @@ char	*get_next_line(int fd)
 // 		if (!returned)
 // 			return (returned);
 // 		ft_clean_saved(&saved);
-//
 // 	}
 // 	else
 // 	{
@@ -183,10 +231,3 @@ char	*get_next_line(int fd)
 // 	return (returned);
 // }
 //
-// int	main(void)
-// {
-// 	int fd = open("AlbionOnline.txt", O_RDONLY);
-// 	for (int i = 0; i < 3; i++)
-// 		printf("%s", get_next_line(fd));
-// 	return (0);
-// }
