@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/22 20:01:51 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/22 21:11:24 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,28 +138,23 @@ static void	ft_clean_saved(char **saved)
 	char	*temp;
 	ssize_t	i;
 
-	if (saved && *saved)
+	if (!saved || !*saved)
+		return ;
+	temp = *saved;
+	i = 0;
+	while ((*saved)[i] && (*saved)[i] != '\n')
+		i++;
+	if ((*saved)[i] == '\n')
+		i++;
+	new_saved = ft_substr(*saved, i, ft_strlen_gnl(*saved, 0) - i);
+	free(temp);
+	if (!new_saved || !new_saved[0])
 	{
-		temp = *saved;
-		i = 0;
-		while ((*saved)[i] && (*saved)[i] != '\n')
-			i++;
-		if ((*saved)[i] == '\n')
-			i++;
-		new_saved = ft_substr(*saved, i, (ft_strlen_gnl(*saved, 0) - i));
-		free(temp);
-		if (!new_saved || !new_saved[0])
-		{
-			if (!new_saved[0])
-				free(new_saved);
-			*saved = NULL;
-		}
-		else
-		{
-			*saved = new_saved;
-			free(new_saved);
-		}
+		free(new_saved);
+		*saved = NULL;
 	}
+	else
+		*saved = new_saved;
 }
 
 /**
