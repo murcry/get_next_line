@@ -6,37 +6,49 @@
 /*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 20:18:52 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/16 16:27:24 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/17 14:01:05 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /**
- * @brief Joins the two strings 's1' and 's2' into the 'joined' buffer.
+ * @brief Concatenates 's1' and 's2', and frees 's1'.
  *
- * @param joined The destination buffer where the result is stored.
- * @param s1 The first string to be copied.
- * @param s2 The second string to be appended.
+ * Designed for GNL, this function treats a NULL 's1' as an empty string.
+ * It allocates memory for the result, copies the data, and crucially,
+ * frees the original 's1' to prevent memory leaks during the loop.
+ *
+ * @param s1 The accumulator string (will be freed).
+ * @param s2 The buffer string to append (will NOT be freed).
+ * @return A pointer to the new concatenated string, or NULL if allocation fails.
  */
-static void	ft_join(char *joined, char const *s1, char const *s2)
+char	*ft_strjoin_gnl(char *s1, char *s2)
 {
-	size_t	i;
-	size_t	j;
+	char	*join;
+	ssize_t	i;
+	ssize_t	j;
 
-	i = 0;
-	j = 0;
-	while (s1[i])
+	if (!s1)
+		join = ft_strdup(s2);
+	else
 	{
-		joined[i] = s1[i];
-		i++;
+		join = malloc(ft_strlen_gnl(s1, 0) + ft_strlen_gnl(s2, 0) + 1);
+		if (!join)
+		{
+			free(s1);
+			return (NULL);
+		}
+		i = -1;
+		while (s1[++i])
+			join[i] = s1[i];
+		j = -1;
+		while (s2[++j])
+			join[i + j] = s2[j];
+		join[i + j] = '\0';
+		free(s1);
 	}
-	while (s2[j])
-	{
-		joined[i + j] = s2[j];
-		j++;
-	}
-	joined[i + j] = '\0';
+	return (join);
 }
 
 /**
@@ -48,7 +60,7 @@ static void	ft_join(char *joined, char const *s1, char const *s2)
  * length of the str.
  * @return The number of characters that precede the terminating NUL character.
  */
-size_t	ft_strlen(const char *str, int c)
+size_t	ft_strlen_gnl(const char *str, int c)
 {
 	size_t	i;
 
@@ -91,32 +103,6 @@ char	*ft_strchr(const char *s, int c)
 }
 
 /**
- * @brief Allocates (with malloc(3)) and returns a new string resulting from the
- * concatenation of 's1' and 's2'.
- * @param s1 The prefix string.
- * @param s2 The suffix string.
- * @return The new string, or NULL if the memory allocation failed.
- */
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	s1_len;
-	size_t	s2_len;
-	size_t	joined_len;
-	char	*joined;
-
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
-	s1_len = ft_strlen(s1, 0);
-	s2_len = ft_strlen(s2, 0);
-	joined_len = s1_len + s2_len;
-	joined = malloc(joined_len + 1);
-	if (joined == NULL)
-		return (NULL);
-	ft_join(joined, s1, s2);
-	return (joined);
-}
-
-/**
  * @brief returns a pointer to a new string which is a duplicate of the string s.
  * Memory for the new string is obtained with malloc(3).
  *
@@ -131,7 +117,7 @@ char	*ft_strdup(const char *s)
 	int		i;
 
 	i = 0;
-	size_s = ft_strlen(s, 0);
+	size_s = ft_strlen_gnl(s, 0);
 	copy = malloc(size_s + 1);
 	if (copy == NULL)
 		return (NULL);
@@ -142,4 +128,43 @@ char	*ft_strdup(const char *s)
 	}
 	copy[i] = '\0';
 	return (copy);
+}
+
+/**
+ * @brief Allocates (with malloc(3)) and returns a new string from the string
+ * 's'.
+ *
+ * This new string starts at index 'start' and has a maximum size of 'len'.
+ * @param s The string from which to extract the new string.
+ * @param start The start index of the new string in the string 's'.
+ * @param len The maximum size of the new string.
+ * @return The new string, or NULL if the memory allocation failed.
+ */
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	size_t	s_len;
+	size_t	sub_len;
+	char	*sub_s;
+	size_t	i;
+
+	if (s == NULL)
+		return (NULL);
+	i = 0;
+	s_len = ft_strlen_gnl(s, 0);
+	if (start >= s_len)
+		return (ft_strdup(""));
+	if (s_len - start < len)
+		sub_len = s_len - (size_t)start;
+	else
+		sub_len = len;
+	sub_s = malloc(sub_len + 1);
+	if (sub_s == NULL)
+		return (NULL);
+	while (i < sub_len)
+	{
+		sub_s[i] = s[start + i];
+		i++;
+	}
+	sub_s[i] = '\0';
+	return (sub_s);
 }

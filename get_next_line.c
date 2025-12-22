@@ -6,74 +6,71 @@
 /*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/17 12:11:53 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/17 14:09:39 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 /**
- * @brief Allocates (with malloc(3)) and returns a new string from the string
- * 's'.
- *
- * This new string starts at index 'start' and has a maximum size of 'len'.
- * @param s The string from which to extract the new string.
- * @param start The start index of the new string in the string 's'.
- * @param len The maximum size of the new string.
- * @return The new string, or NULL if the memory allocation failed.
- */
-static char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	size_t	s_len;
-	size_t	sub_len;
-	char	*sub_s;
-	size_t	i;
-
-	if (s == NULL)
-		return (NULL);
-	i = 0;
-	s_len = ft_strlen(s, 0);
-	if (start >= s_len)
-		return (ft_strdup(""));
-	if (s_len - start < len)
-		sub_len = s_len - (size_t)start;
-	else
-		sub_len = len;
-	sub_s = malloc(sub_len + 1);
-	if (sub_s == NULL)
-		return (NULL);
-	while (i < sub_len)
-	{
-		sub_s[i] = s[start + i];
-		i++;
-	}
-	sub_s[i] = '\0';
-	return (sub_s);
-}
-
-/**
  * @brief Fill the buffer and returns the bytes readed.
  * 
  * This is a static function for the 
  */
-static ssize_t	ft_fill_buffer(int fd, char *buffer, char **saved)
-{
-	char	*temp4free;
-	ssize_t	bytes_readed;
+// static ssize_t	ft_fill_buffer(int fd, char *buffer, char **saved)
+// {
+// 	char	*temp4free;
+// 	ssize_t	bytes_readed;
 
-	bytes_readed = read(fd, buffer, BUFFER_SIZE);
-	if (bytes_readed <= 0)
-		return (bytes_readed);
-	buffer[bytes_readed] = '\0';
-	if (!*saved)
-		*saved = ft_strdup(buffer);
-	else
+// 	bytes_readed = read(fd, buffer, BUFFER_SIZE);
+// 	if (bytes_readed <= 0)
+// 		return (bytes_readed);
+// 	buffer[bytes_readed] = '\0';
+// 	if (!*saved)
+// 		*saved = ft_strdup(buffer);
+// 	else
+// 	{
+// 		temp4free = *saved;
+// 		*saved = ft_strjoin(*saved, buffer);
+// 		free(temp4free);
+// 	}
+// 	return (bytes_readed);
+// }
+
+/**
+ * @brief Reads from the file descriptor into a buffer and appends the content
+ * to the 'saved' string until a newline is found or EOF is reached.
+ * * Uses a dynamically allocated buffer of size BUFFER_SIZE. It handles errors
+ * by freeing memory and returning NULL if read() fails.
+ *
+ * @param fd The file descriptor to read from.
+ * @param saved The static string containing previously read content.
+ * @return The updated 'saved' string containing the new data, or NULL if
+ * an error occurs.
+ */
+static char	*ft_read_to_saved(int fd, char *saved)
+{
+	char	*buffer;
+	int		readed_bytes;
+
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	readed_bytes = 1;
+	while (readed_bytes != 0 && (!saved || !ft_strchr(saved, '\n')))
 	{
-		temp4free = *saved;
-		*saved = ft_strjoin(*saved, buffer);
-		free(temp4free);
+		readed_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (readed_bytes == -1)
+		{
+			free(buffer);
+			free(saved);
+			return (NULL);
+		}
+		buffer[readed_bytes] = '\0';
+		saved = ft_strjoin_gnl(saved, buffer);
 	}
-	return (bytes_readed);
+	free(buffer);
+	return (saved);
 }
 
 /**
@@ -93,20 +90,26 @@ static char	*ft_get_line(char *saved)
 	ssize_t	i;
 	ssize_t	s_returned;
 
-	i = 0;
-	s_returned = ft_strlen(saved, '\n') + 1;
+	i = -1;
+	s_returned = ft_strlen_gnl(saved, '\n') + 1;
 	returned = malloc(sizeof(char) * s_returned + 1);
 	if (!returned)
 		return (NULL);
-	while (i < s_returned)
-	{
+	while (++i < s_returned)
 		returned[i] = saved[i];
-		i++;
-	}
 	returned[i] = '\0';
 	return (returned);
 }
 
+/**
+ * @brief Updates the static variable by removing the line that was just read.
+ *
+ * This function creates a new substring containing only the characters
+ * remaining after the first newline found in the current buffer. It then
+ * frees the original buffer and updates the pointer to the new substring.
+ *
+ * @param s A pointer to the address of the static string (saved buffer).
+ */
 static void	ft_clean_saved(char **s)
 {
 	char	*temp;
@@ -114,49 +117,76 @@ static void	ft_clean_saved(char **s)
 	if (*s)
 	{
 		temp = *s;
-		*s = ft_substr(*s, ft_strlen(*s, '\n') + 1, ft_strlen(*s, 0));
+		*s = ft_substr(*s, ft_strlen_gnl(*s, '\n') + 1, ft_strlen_gnl(*s, 0));
 		free(temp);
 	}
 	else
 		*s = NULL;
 }
 
+/**
+ * @brief Reads a line from a file descriptor.
+ *
+ * This function reads from the given file descriptor until a newline character
+ * is found or the end of the file is reached. It uses a static buffer to store
+ * the remaining data between calls, allowing it to be called repeatedly to
+ * read the file line by line.
+ *
+ * @param fd The file descriptor to read from.
+ * @return A pointer to the line read (including the newline character if
+ * present), or NULL if an error occurs or if there is nothing left to read.
+ */
 char	*get_next_line(int fd)
 {
 	static char	*saved;
-	char		*returned;
-	char		*buffer;
-	ssize_t		bytes;
+	char		*line;
 
-	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buffer)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	bytes = 1;
-	returned = NULL;
-	while (bytes > 0 && (!saved || ft_strchr(saved, '\n') == NULL))
-		bytes = ft_fill_buffer(fd, buffer, &saved);
-	if (bytes > 0)
-	{
-		returned = ft_get_line(saved);
-		if (!returned)
-			return (returned);
-		ft_clean_saved(&saved);
-		
-	}
-	else
-	{
-		if (bytes == 0 && saved)
-			returned = ft_strdup(saved);
-		free(saved);
-		saved = NULL;
-	}
-	return (returned);
+	saved = ft_read_to_saved(fd, saved);
+	if (!saved)
+		return (NULL);
+	line = ft_get_line(saved);
+	ft_clean_saved(&saved);
+	return (line);
 }
 
-int	main(void)
-{
-	int fd = open("AlbionOnline.txt", O_RDONLY);
-	for (int i = 0; i < 3; i++)
-		printf("%s", get_next_line(fd));
-	return (0);
-}
+// char	*get_next_line(int fd)
+// {
+// 	static char	*saved;
+// 	char		*returned;
+// 	char		*buffer;
+// 	ssize_t		bytes;
+//
+// 	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
+// 	if (!buffer)
+// 		return (NULL);
+// 	bytes = 1;
+// 	returned = NULL;
+// 	while (bytes > 0 && (!saved || ft_strchr(saved, '\n') == NULL))
+// 		bytes = ft_fill_buffer(fd, buffer, &saved);
+// 	if (bytes > 0)
+// 	{
+// 		returned = ft_get_line(saved);
+// 		if (!returned)
+// 			return (returned);
+// 		ft_clean_saved(&saved);
+//
+// 	}
+// 	else
+// 	{
+// 		if (bytes == 0 && saved)
+// 			returned = ft_strdup(saved);
+// 		free(saved);
+// 		saved = NULL;
+// 	}
+// 	return (returned);
+// }
+//
+// int	main(void)
+// {
+// 	int fd = open("AlbionOnline.txt", O_RDONLY);
+// 	for (int i = 0; i < 3; i++)
+// 		printf("%s", get_next_line(fd));
+// 	return (0);
+// }
