@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/11 20:18:52 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/23 16:27:56 by digonza2         ###   ########.fr       */
+/*   Created: 2025/12/23 16:14:50 by digonza2          #+#    #+#             */
+/*   Updated: 2025/12/23 16:23:58 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /**
  * @brief Concatenates 's1' and 's2', and frees 's1'.

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/23 16:28:22 by digonza2         ###   ########.fr       */
+/*   Created: 2025/12/23 16:15:31 by digonza2          #+#    #+#             */
+/*   Updated: 2025/12/23 16:27:36 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /**
  * @brief Reads from the file descriptor into a buffer and appends the content
@@ -127,26 +127,26 @@ static void	ft_clean_saved(char **saved)
  */
 char	*get_next_line(int fd)
 {
-	static char	*saved;
+	static char	*saved[MAX_FD];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
-		if (saved)
-			free(saved);
+		if (saved[fd])
+			free(saved[fd]);
 		return (NULL);
 	}
-	saved = ft_read_to_saved(fd, saved);
-	if (!saved)
+	saved[fd] = ft_read_to_saved(fd, saved[fd]);
+	if (!saved[fd])
 		return (NULL);
-	line = ft_get_line(saved);
+	line = ft_get_line(saved[fd]);
 	if (!line)
 	{
-		free(saved);
-		saved = NULL;
+		free(saved[fd]);
+		saved[fd] = NULL;
 		return (NULL);
 	}
-	if (saved)
-		ft_clean_saved(&saved);
+	if (saved[fd])
+		ft_clean_saved(&saved[fd]);
 	return (line);
 }
