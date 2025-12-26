@@ -48,14 +48,14 @@ Luego, incluye la cabecera en tu archivo `.c`:
 
 ### 2. Compilación ###
 
-El proyecto debe compilarse junto con tu archivo principal (tu_programa.c). Puedes definir el tamaño del buffer con la bandera `-D BUFFER_SIZE=xx`.
+El proyecto debe compilarse junto con tu archivo principal (tu_programa.c). Puedes definir el tamaño del buffer con la flag `-D BUFFER_SIZE=xx`.
 ```bash
 cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line.c get_next_line_utils.c <tu_programa.c> -o <nombre>
 ```
 
 ### 3. Ejecución ###
 
-Una vez compilado, ejecuta el programa indicando el archivo que quieras leer (si tu main lo soporta) o simplemente ejecutando el binario:
+Una vez compilado, ejecuta el programa indicando el archivo ejecutando el comando:
 ```bash
 ./<nombre>
 ```
