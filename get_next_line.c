@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:10:45 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/23 16:28:22 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/26 12:44:44 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 /**
  * @brief Reads from the file descriptor into a buffer and appends the content
  * to the 'saved' string until a newline is found or EOF is reached.
- * * Uses a dynamically allocated buffer of size BUFFER_SIZE. It handles errors
- * by freeing memory and returning NULL if read() fails.
  *
+ * Uses a dynamically allocated buffer of size BUFFER_SIZE. It handles errors
+ * by freeing memory and returning NULL if read() fails.
  * @param fd The file descriptor to read from.
  * @param saved The static string containing previously read content.
  * @return The updated 'saved' string containing the new data, or NULL if
@@ -54,7 +54,6 @@ static char	*ft_read_to_saved(int fd, char *saved)
  * This function calculates the length of the line up to the newline character,
  * allocates memory for it, and copies the content. The returned string is
  * NUL-terminated.
- *
  * @param saved The static string containing the buffer read from the file.
  * @return A pointer to the newly allocated string containing the line, 
  * or NULL if memory allocation fails.
@@ -62,8 +61,8 @@ static char	*ft_read_to_saved(int fd, char *saved)
 static char	*ft_get_line(char *saved)
 {
 	char	*returned;
-	ssize_t	i;
 	ssize_t	s_returned;
+	ssize_t	i;
 
 	i = -1;
 	if (!saved || !saved[0])
@@ -84,7 +83,6 @@ static char	*ft_get_line(char *saved)
  * This function creates a new substring containing only the characters
  * remaining after the first newline found in the current buffer. It then
  * frees the original buffer and updates the pointer to the new substring.
- *
  * @param s A pointer to the address of the static string (saved buffer).
  */
 
@@ -120,7 +118,6 @@ static void	ft_clean_saved(char **saved)
  * is found or the end of the file is reached. It uses a static buffer to store
  * the remaining data between calls, allowing it to be called repeatedly to
  * read the file line by line.
- *
  * @param fd The file descriptor to read from.
  * @return A pointer to the line read (including the newline character if
  * present), or NULL if an error occurs or if there is nothing left to read.

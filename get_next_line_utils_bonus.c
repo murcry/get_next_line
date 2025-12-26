@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/23 16:14:50 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/23 16:23:58 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/26 12:44:47 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

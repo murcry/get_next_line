@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: digonza2 <digonza2@student.42madrid.com>   +#+  +:+       +#+        */
+/*   By: digonza2 <digonza2@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 20:18:52 by digonza2          #+#    #+#             */
-/*   Updated: 2025/12/23 16:27:56 by digonza2         ###   ########.fr       */
+/*   Updated: 2025/12/26 12:44:46 by digonza2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
  * Designed for GNL, this function treats a NULL 's1' as an empty string.
  * It allocates memory for the result, copies the data, and crucially,
  * frees the original 's1' to prevent memory leaks during the loop.
- *
  * @param s1 The accumulator string (will be freed).
  * @param s2 The buffer string to append (will NOT be freed).
  * @return A pointer to the new concatenated string, or NULL if allocation fails.
@@ -104,8 +103,8 @@ char	*ft_strchr(const char *s, int c)
 
 /**
  * @brief returns a pointer to a new string which is a duplicate of the string s.
- * Memory for the new string is obtained with malloc(3).
  *
+ * Memory for the new string is obtained with malloc(3).
  * @param s The string to duplicate.
  * @return A pointer to the duplicated string, or NULL if insufficient memory 
  * was available.
